@@ -1,0 +1,4 @@
+
+
+void InitArkonid();
+void PlayArkonid();
