@@ -1,21 +1,27 @@
 #include "screen.h"
 
-// Window size
-int _width = 640;
-int _height = 480;
 
-SDL_Rect rectangle;
 
-// SDL Window
-SDL_Window *_window;
 
-// SDL Renderer to draw to
-SDL_Renderer *_renderer;
+
+
+Screen::Screen() {
+
+    //Init SDL2 and SDL2_TTF
+    this->init_sdl();
+	this->init_window_and_renderer();
+
+    x_offset=0;y_offset=0;
+
+
+
+    //tetris = new TetrisMatrixDraw(tft);
+}
 
 /**
  * Initialise SDL2 and output some useful display info
  */
-void init_sdl()
+void Screen::init_sdl()
 {
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     printf("[Error] SDL Init : %s \n", SDL_GetError());
@@ -33,7 +39,7 @@ void init_sdl()
  *
  * This uses SDL_CreateWindowAndRenderer. They can alternatively be created separately. See SDL2 Docs
  */
-void init_window_and_renderer()
+void Screen::init_window_and_renderer()
 {
   if (SDL_CreateWindowAndRenderer(_width, _height, SDL_WINDOW_SHOWN, &_window, &_renderer) != 0) {
     printf("[Error] Creating Window and Renderer: %s\n", SDL_GetError());
@@ -44,17 +50,6 @@ void init_window_and_renderer()
 }
 
 
-Screen::Screen() {
-
-    //Init SDL2 and SDL2_TTF
-    init_sdl();
-    TTF_Init();
-	init_window_and_renderer();
-
-    x_offset=0;y_offset=0;
-
-    //tetris = new TetrisMatrixDraw(tft);
-}
 
 void Screen::setOffset(int16_t x, int16_t y) {
     x_offset=x;
@@ -87,7 +82,7 @@ void Screen::test(void) {
 // Get pin name for ESP8266
 int8_t Screen::getPinName(int8_t pin)
 {
- 
+    return 0;
 }
 
 long Screen::getwidth(void) { 
@@ -96,26 +91,59 @@ long Screen::getwidth(void) {
 long Screen::getheight(void){ 
     return _height;
 }
+
+void Screen::setSDLColor(uint16_t color) {
+    switch (color) {
+        case ILI9486_YELLOW:
+            SDL_SetRenderDrawColor(_renderer, 255, 255, 0, 255);
+            break;
+        case ILI9486_BLACK:
+            SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 0);
+            break;    
+        case TFT_RED:
+            SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
+            break;       
+        default:
+            SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+    }
+}
+
+uint16_t Screen::calcY(uint16_t y) {
+    return WorldHeight-y;
+}
+
+uint16_t Screen::calcX(uint16_t x) {
+    return WorldWidth-x;
+}
+
 void Screen::fillCircle(int16_t x, int16_t y, int16_t radius, uint16_t color) {
     //tft.fillCircle(x + x_offset, y + y_offset, radius, color);
+    this->setSDLColor(color);
+    this->SDL_RenderFillCircle(_renderer, this->calcX(x + x_offset), this->calcY(y + y_offset), radius);
 }
 void Screen::fillRect(int16_t x, int16_t y, int16_t radius, uint16_t color) {
-    //tft.fillRect(x + x_offset, y + y_offset, radius, radius, color);
+    this->fillRect(x, y, radius, radius, color);
 }    
 
 void Screen::fillRect(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color) {
-    SDL_SetRenderDrawColor(_renderer, 255, 255, 0, 255);
+    this->setSDLColor(color);
     SDL_Rect _sampleRect;
-    _sampleRect.x = x;
-    _sampleRect.y =y;
+    _sampleRect.x = this->calcX(x+ x_offset);
+    _sampleRect.y = this->calcY(y + y_offset);
     _sampleRect.h =height;
     _sampleRect.w = width;
     SDL_RenderFillRect(_renderer, &_sampleRect);
-
     //tft.fillRect(x + x_offset, y + y_offset, width, height, color);
 }
 
 void Screen::drawRect(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color) {
+    this->setSDLColor(color);
+    SDL_Rect _sampleRect;
+    _sampleRect.x = this->calcX(x+ x_offset);
+    _sampleRect.y = this->calcY(y + y_offset);
+    _sampleRect.h =height;
+    _sampleRect.w = width;
+    SDL_RenderDrawRect(_renderer, &_sampleRect);
     //tft.drawRect(x + x_offset, y + y_offset, width, height, color);
 }
 
@@ -143,7 +171,7 @@ void Screen::setTextSize(int16_t size) {
      //tft.drawNumber(number, x + x_offset, y + y_offset);
  }
 
-void Screen::drawText(std::string text, int16_t x, int16_t y) {
+void Screen::drawText(char * text, int16_t x, int16_t y) {
         /*tft.setTextColor(ILI9486_YELLOW, ILI9486_BLACK);
         tft.setCursor(x + x_offset, y + y_offset);
         tft.println(text);
@@ -151,10 +179,7 @@ void Screen::drawText(std::string text, int16_t x, int16_t y) {
 }
 
 void Screen::fillScreen(uint16_t color) {
-    //SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255); 
-    //SDL_RenderFillRect(_renderer, &rectangle);
-
-    SDL_SetRenderDrawColor(_renderer, 0, 0, 0, 0);
+    this->setSDLColor(color);
     SDL_RenderClear(_renderer);
 }
 
@@ -165,7 +190,7 @@ void Screen::drawicon(int x, int y, const uint16_t *icon) { // Draws the graphic
 }
 
 
-void Screen::Tetris_setText(std::string txt, bool forceRefresh) {
+void Screen::Tetris_setText(char * txt, bool forceRefresh) {
    // tetris->setText(txt, forceRefresh);
 }
 
@@ -179,7 +204,7 @@ bool Screen::Tetris_drawText(int x, int y, int color) {
     return false;
 }  
 
- void Screen::Tetris_DrawChar(std::string letter, uint8_t x, uint8_t y, uint16_t color) {
+ void Screen::Tetris_DrawChar(char * letter, uint8_t x, uint8_t y, uint16_t color) {
      //tetris->drawChar(letter,  x,  y,  color);
  }
 
@@ -193,10 +218,12 @@ void Screen::Tetris_setNumbers(long nummer) {
 
 bool Screen::Tetris_drawNumbers(int x_pos, int y_pos, bool drawColon){
     // return tetris->drawNumbers(x_pos,y_pos, drawColon);
+    return true;
  }
 
 bool Screen::Tetris_drawNumbers(int x_pos, int y_pos, bool drawColon, int color) {
     // return tetris->drawNumbers(x_pos,y_pos, drawColon, color);
+    return true;
  }
 
 void Screen::Tetris_setTime(char * timeString) {
@@ -244,3 +271,49 @@ void Screen::doRender() {
 void Screen::sleep(int ms) {
     SDL_Delay(ms);
 }
+
+int Screen::SDL_RenderFillCircle(SDL_Renderer * renderer, int x, int y, int radius)
+{
+    int offsetx, offsety, d;
+    int status;
+
+    //CHECK_RENDERER_MAGIC(renderer, -1);
+
+    offsetx = 0;
+    offsety = radius;
+    d = radius -1;
+    status = 0;
+
+    while (offsety >= offsetx) {
+
+        status += SDL_RenderDrawLine(renderer, x - offsety, y + offsetx,
+                                     x + offsety, y + offsetx);
+        status += SDL_RenderDrawLine(renderer, x - offsetx, y + offsety,
+                                     x + offsetx, y + offsety);
+        status += SDL_RenderDrawLine(renderer, x - offsetx, y - offsety,
+                                     x + offsetx, y - offsety);
+        status += SDL_RenderDrawLine(renderer, x - offsety, y - offsetx,
+                                     x + offsety, y - offsetx);
+
+        if (status < 0) {
+            status = -1;
+            break;
+        }
+
+        if (d >= 2*offsetx) {
+            d -= 2*offsetx + 1;
+            offsetx +=1;
+        }
+        else if (d < 2 * (radius - offsety)) {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        }
+        else {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
+
+    return status;
+}    

@@ -1,8 +1,8 @@
-
+#include "main.h"
 #include "screen.h"
-#include "Arkonid.h"
-
-
+#include "paddle.h"
+#include "ball.h"
+#include "blocks.h"
 
 char uhrzeit[6] = {1, 2, 3, 0, 0, 0};
   int16_t last_hour = -1;
@@ -13,26 +13,42 @@ char uhrzeit[6] = {1, 2, 3, 0, 0, 0};
 short GameType = -1;
 
 Screen * tft;
-
-
-
+Paddle * paddle;
+Ball * ball;
+Blocks * blocks;
+int16_t curBlock;
 
 /**
  * The main game loop. Continues to loop until Escape or an SDL_Quit event occurs
  */
 void main_loop(int loop)
 {
-  static int rect_y=0;
+  static int rect_y=200;
 
-
-  
       if (loop>=100) 
-          { rect_y+=10; loop=0;}
+          { rect_y-=10; loop=0;}
 
-      tft->fillScreen(0);
-      tft->fillRect(loop+100, rect_y+10, 50, 50, 0);
-      tft->doRender();
-      tft->sleep(10);
+      
+      //tft->fillRect(loop+100, rect_y+10, 50, 50, 0);
+     // PlayArkonid();
+  Get_Time();
+  tft->fillScreen(ILI9486_BLACK);
+
+  //paddle->update(300); //ball->GetX());
+  //tft->fillRect(loop+100, rect_y+10, 50, 50, ILI9486_YELLOW);
+  //paddle->setX(loop+200);
+  //paddle->draw();
+  //paddle->update(loop);
+  blocks->draw();
+  curBlock = ball->move_draw();  
+  blocks->checkBall(ball);
+   
+  paddle->update(ball->GetX());
+  blocks->draw(ball);
+
+  tft->doRender();
+      
+      tft->sleep(5);
       
 }
 
@@ -41,7 +57,7 @@ void GetTime( int16_t &hour, int16_t &min, int16_t &sec) {
 	time_t curr_time;
 	curr_time = time(NULL);
 	tm *tm_local = localtime(&curr_time);
-  printf("time %d\n",  tm_local->tm_hour);
+ // printf("time %d\n",  tm_local->tm_hour);
 
   hour = tm_local->tm_hour;
   min  = tm_local->tm_min;
@@ -56,7 +72,7 @@ void GetTime( int16_t &hour, int16_t &min, int16_t &sec) {
     uhrzeit[5] = sec % 10;
 }
 
-void GetTime() {
+void Get_Time() {
   int16_t cur_hour;
   int16_t cur_min;
   int16_t cur_sec;
@@ -127,7 +143,14 @@ void CheckTime() {
 
 int main(int argc, char* argv[])
 {
-     tft = new Screen();
+    Get_Time();
+    tft = new Screen();
+    paddle = new Paddle(tft);
+    ball = new Ball(tft);
+    ball->setAngle(37);
+    blocks = new Blocks(tft);
+
+    InitArkonid();
 	
 /*
 
@@ -189,4 +212,33 @@ int main(int argc, char* argv[])
 
 
     return 0;
+}
+
+
+void InitArkonid() {
+    SetGame(Arkonoid, 7);
+
+    tft->fillScreen(ILI9486_BLACK);
+    blocks->setColor(ILI9486_YELLOW);
+    paddle->setType(true);
+    paddle->draw();
+ 
+    ball->SetY(20);
+    blocks->Setup(uhrzeit);
+    blocks->draw();
+
+    tft->doRender();
+}
+
+void PlayArkonid() {
+  tft->fillScreen(0);
+    /*
+  curBlock = ball->move_draw();  
+  blocks->checkBall(ball);
+   */
+  paddle->update(300); //ball->GetX());
+  /*
+  blocks->draw(ball);
+  */
+  tft->doRender();
 }
