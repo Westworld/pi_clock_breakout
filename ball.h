@@ -15,7 +15,7 @@ private:
     float move_x, move_y;
     float pos_x, pos_y;
     int16_t max_x, max_y;
-    int16_t speed = 1;
+    int16_t speed = 3;
     const int16_t radius=8;
     uint16_t color = ILI9486_YELLOW;
     int16_t blockid = 0;

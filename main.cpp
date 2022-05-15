@@ -1,3 +1,4 @@
+#include <time.h>
 #include "main.h"
 #include "screen.h"
 #include "paddle.h"
@@ -21,34 +22,13 @@ int16_t curBlock;
 /**
  * The main game loop. Continues to loop until Escape or an SDL_Quit event occurs
  */
-void main_loop(int loop)
+void main_loop()
 {
-  static int rect_y=200;
+  //static int rect_y=200;
 
-      if (loop>=100) 
-          { rect_y-=10; loop=0;}
-
-      
-      //tft->fillRect(loop+100, rect_y+10, 50, 50, 0);
-     // PlayArkonid();
   Get_Time();
-  tft->fillScreen(ILI9486_BLACK);
-
-  //paddle->update(300); //ball->GetX());
-  //tft->fillRect(loop+100, rect_y+10, 50, 50, ILI9486_YELLOW);
-  //paddle->setX(loop+200);
-  //paddle->draw();
-  //paddle->update(loop);
-  blocks->draw();
-  curBlock = ball->move_draw();  
-  blocks->checkBall(ball);
-   
-  paddle->update(ball->GetX());
-  blocks->draw(ball);
-
-  tft->doRender();
-      
-      tft->sleep(5);
+  PlayArkonid();
+  //tft->sleep(1);
       
 }
 
@@ -151,64 +131,21 @@ int main(int argc, char* argv[])
     blocks = new Blocks(tft);
 
     InitArkonid();
-	
-/*
 
-    //Make a color for our test {R, G, B}
-    SDL_Color color = {255, 255, 40};
+    SDL_Event event;
+    int FPS = 100; //Framerate
 
-    //Set the position of our text
-    int x = 20;
-    int y = 20;
-    int w = 300;
-    int h = 40;
+    while (1) {
+          Uint32 start_time = SDL_GetTicks();
+          if (tft->event())
+              break;
 
-    //Write the text to display
-    const char* text = "SDL2_Ttf    works    on    Raspberry    Pi!";
-
-    //Make our TTF_Font variable
-    TTF_Font* font =  TTF_OpenFont("resources/OpenSans-Regular.ttf", 36);
-    if(font == 0)
-    	printf("TTF_Font failed");
-
-    //Make an SDL_Surface for the text
-    SDL_Surface* sText = TTF_RenderText_Solid(font, text, color);
-    if(sText == 0)
-    	printf("SDL_Surface failed");
-    //Make an SDL_Texture for the text
-    SDL_Texture* tText = SDL_CreateTextureFromSurface(_renderer, sText);
-    if(tText == 0)
-    	printf("tText failed");
-    //Make the rectangle area where the text will be placed
-    SDL_Rect rText = {x, y, w, h};
-
-    //Draw our text to the screen
-    SDL_RenderCopy(_renderer, tText, NULL, &rText);
-
-    //Close the Font since we are done with it
-    TTF_CloseFont(font);
-
-    //Free the Surface since we are done with it
-    SDL_FreeSurface(sText);
-
-    //Destroy the Texture since we are done with it
-    SDL_DestroyTexture(tText);
-    SDL_RenderFillRect(_renderer, &_sampleRect);
-    SDL_RenderPresent(_renderer);
-
-*/
-
-
-  SDL_Event event;
-  int loop=0;
-  while (1) {
-        if (tft->event())
-            break;
-
-        main_loop(loop++);
-        if (loop>100) 
-          { loop=0;}
-  }
+          main_loop();
+          if((1000/FPS)>(SDL_GetTicks()-start_time))
+          {
+            SDL_Delay((1000/FPS)-(SDL_GetTicks()-start_time)); //Yay stable framerate!
+          }
+    }
 
 
     return 0;
@@ -231,14 +168,19 @@ void InitArkonid() {
 }
 
 void PlayArkonid() {
-  tft->fillScreen(0);
-    /*
+  tft->fillScreen(ILI9486_BLACK);
+
+  //paddle->update(300); //ball->GetX());
+  //tft->fillRect(loop+100, rect_y+10, 50, 50, ILI9486_YELLOW);
+  //paddle->setX(loop+200);
+  //paddle->draw();
+  //paddle->update(loop);
+  blocks->draw();
   curBlock = ball->move_draw();  
   blocks->checkBall(ball);
-   */
-  paddle->update(300); //ball->GetX());
-  /*
+   
+  paddle->update(ball->GetX());
   blocks->draw(ball);
-  */
+
   tft->doRender();
 }

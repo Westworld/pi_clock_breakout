@@ -109,27 +109,33 @@ void Screen::setSDLColor(uint16_t color) {
 }
 
 uint16_t Screen::calcY(uint16_t y) {
-    return WorldHeight-y;
+    return y;//WorldHeight-y;
 }
 
 uint16_t Screen::calcX(uint16_t x) {
-    return WorldWidth-x;
+    return x;//WorldWidth-x;
+}
+
+void Screen::transform(int16_t &x, int16_t &y, int16_t width, int16_t height, uint16_t color) {
+    this->setSDLColor(color);
+    x = WorldWidth-x-width;
+    y = WorldHeight-y-height;
 }
 
 void Screen::fillCircle(int16_t x, int16_t y, int16_t radius, uint16_t color) {
     //tft.fillCircle(x + x_offset, y + y_offset, radius, color);
-    this->setSDLColor(color);
-    this->SDL_RenderFillCircle(_renderer, this->calcX(x + x_offset), this->calcY(y + y_offset), radius);
+    this->transform(x, y, radius, radius, color);
+    this->SDL_RenderFillCircle(_renderer, (x + x_offset), (y + y_offset), radius);
 }
 void Screen::fillRect(int16_t x, int16_t y, int16_t radius, uint16_t color) {
     this->fillRect(x, y, radius, radius, color);
-}    
+} 
 
 void Screen::fillRect(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color) {
-    this->setSDLColor(color);
+    this->transform(x, y, width, height, color);
     SDL_Rect _sampleRect;
-    _sampleRect.x = this->calcX(x+ x_offset);
-    _sampleRect.y = this->calcY(y + y_offset);
+    _sampleRect.x = (x+ x_offset);
+    _sampleRect.y = (y + y_offset);
     _sampleRect.h =height;
     _sampleRect.w = width;
     SDL_RenderFillRect(_renderer, &_sampleRect);
@@ -137,10 +143,10 @@ void Screen::fillRect(int16_t x, int16_t y, int16_t width, int16_t height, uint1
 }
 
 void Screen::drawRect(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color) {
-    this->setSDLColor(color);
+    this->transform(x, y, width, height, color);
     SDL_Rect _sampleRect;
-    _sampleRect.x = this->calcX(x+ x_offset);
-    _sampleRect.y = this->calcY(y + y_offset);
+    _sampleRect.x = (x+ x_offset);
+    _sampleRect.y = (y + y_offset);
     _sampleRect.h =height;
     _sampleRect.w = width;
     SDL_RenderDrawRect(_renderer, &_sampleRect);

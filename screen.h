@@ -46,6 +46,7 @@ public:
     void setSDLColor(uint16_t color);
     uint16_t calcY(uint16_t y);
     uint16_t calcX(uint16_t x);
+    void transform(int16_t &x, int16_t &y, int16_t width, int16_t height, uint16_t color);
     void fillCircle(int16_t x, int16_t y, int16_t radius, uint16_t color);
     void fillRect(int16_t x, int16_t y, int16_t radius, uint16_t color);
     void fillRect(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color);

@@ -268,9 +268,9 @@ if (gameType == Arkonoid) {
         case 7:
          blockwidth = 48;
          blockheight = 48;
-         blockstartx = 1000;
+         blockstartx = 900;
          blockstarty = 600;
-         blockoffset = 52;      
+         blockoffset = 56;      
          break;       default:
          blockwidth = 12;
          blockheight = 14;

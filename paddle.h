@@ -12,9 +12,10 @@ private:
     int16_t max_x, max_y;
     const int16_t paddlewidth=32;
     int16_t paddleheight=-6;
-    int16_t pos_y=10;
+    int16_t pos_y=15;
     uint16_t color = ILI9486_YELLOW;
     bool justLine=true;
+    int16_t paddlespeed=3;
 
     Screen * tft;
 
