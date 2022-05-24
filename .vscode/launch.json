@@ -24,9 +24,9 @@
       "stopAtEntry": true,
       "cwd": "/Users/thomasmaul/Documents/Development/sdl_test",
       "environment": [],
-      "program": "/Users/thomasmaul/Documents/Development/sdl_test/build/Release/outRelease",
+      "program": "/Users/thomasmaul/Documents/Development/sdl_test/build/Debug/outDebug",
       "internalConsoleOptions": "openOnSessionStart",
-      "MIMode": "gdb",
+      "MIMode": "lldb",
       "externalConsole": false
     }
   ]

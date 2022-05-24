@@ -26,6 +26,7 @@ public:
     //void update(float ballpos);
     void draw(void);
     void draw(int16_t old_x, int16_t old_y, int16_t loop, int16_t move_x, int16_t move_y);
+    void move(int16_t old_x, int16_t old_y, int16_t loop, int16_t move_x, int16_t move_y);
     void draw(Ball * ball);
     void checkBall(Ball * ball);
     bool checkShot(int16_t x, int16_t y);  

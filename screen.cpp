@@ -1,10 +1,6 @@
 #include "screen.h"
 
 
-
-
-
-
 Screen::Screen() {
 
     //Init SDL2 and SDL2_TTF
@@ -12,10 +8,6 @@ Screen::Screen() {
 	this->init_window_and_renderer();
 
     x_offset=0;y_offset=0;
-
-
-
-    //tetris = new TetrisMatrixDraw(tft);
 }
 
 /**
@@ -103,6 +95,32 @@ void Screen::setSDLColor(uint16_t color) {
         case TFT_RED:
             SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
             break;       
+        case TFT_WHITE:
+             SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+            break;     
+
+        case TFT_tetrisRED:
+             SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
+            break;  
+         case TFT_tetrisGREEN:
+             SDL_SetRenderDrawColor(_renderer, 0, 255, 0, 255);
+            break;  
+        case TFT_tetrisBLUE:
+             SDL_SetRenderDrawColor(_renderer, 0, 0, 255, 255);
+            break;  
+         case TFT_tetrisYELLOW:
+             SDL_SetRenderDrawColor(_renderer, 255, 255, 0, 255);
+            break;  
+        case TFT_tetrisCYAN:
+             SDL_SetRenderDrawColor(_renderer, 0, 255, 255, 255);
+            break;  
+        case TFT_tetrisMAGENTA:
+             SDL_SetRenderDrawColor(_renderer, 255, 0, 255, 255);
+            break;                                                            
+        case TFT_tetrisORANGE:
+             SDL_SetRenderDrawColor(_renderer, 255, 0x88, 0, 255);
+            break; 
+
         default:
             SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
     }
@@ -118,8 +136,14 @@ uint16_t Screen::calcX(uint16_t x) {
 
 void Screen::transform(int16_t &x, int16_t &y, int16_t width, int16_t height, uint16_t color) {
     this->setSDLColor(color);
-    x = WorldWidth-x-width;
-    y = WorldHeight-y-height;
+    if(!this->rotate) {
+        x = WorldWidth-x-width;
+        y = WorldHeight-y-height;
+    }
+}
+
+void Screen::doRotate(bool rotate){
+    this->rotate=rotate;
 }
 
 void Screen::fillCircle(int16_t x, int16_t y, int16_t radius, uint16_t color) {
@@ -129,6 +153,10 @@ void Screen::fillCircle(int16_t x, int16_t y, int16_t radius, uint16_t color) {
 }
 void Screen::fillRect(int16_t x, int16_t y, int16_t radius, uint16_t color) {
     this->fillRect(x, y, radius, radius, color);
+} 
+
+void Screen::drawPixel(int16_t x, int16_t y, uint16_t color) {
+    this->fillRect(x*2, y*2, 2, 2, color);
 } 
 
 void Screen::fillRect(int16_t x, int16_t y, int16_t width, int16_t height, uint16_t color) {
@@ -161,10 +189,21 @@ void Screen::setTextColor(int16_t front,int16_t back) {
     //tft.setTextColor(front,back); 
 }
 
+void Screen::setTextColor(int16_t front) {
+    //tft.setTextColor(front,back); 
+}
+
 void Screen::setTextSize(int16_t size) {
     //tft.setTextSize(size);
 }
 
+void Screen::setCursor (int16_t x, int16_t y) {
+    ;
+}
+
+void Screen::print (char * text) {
+    ;
+}
  void Screen::setFreeFontFix() {
      //tft.setFreeFont(FF20); // FF20
  }
@@ -195,6 +234,7 @@ void Screen::drawicon(int x, int y, const uint16_t *icon) { // Draws the graphic
   
 }
 
+/*
 
 void Screen::Tetris_setText(char * txt, bool forceRefresh) {
    // tetris->setText(txt, forceRefresh);
@@ -233,8 +273,17 @@ bool Screen::Tetris_drawNumbers(int x_pos, int y_pos, bool drawColon, int color)
  }
 
 void Screen::Tetris_setTime(char * timeString) {
-  //  tetris->setTime(timeString, true);
+  tetris->setTime(timeString, true);
 }
+
+void Screen::drawPixel(int x, int y, int color) {
+    ;
+}
+void Screen::Tetris_drawPixel(int x, int y, int color) {
+
+}
+
+*/
 
 void Screen::tft_setSwapBytes(bool swap) {
    // tft.setSwapBytes(swap);

@@ -77,6 +77,24 @@ void Block::draw(Screen * tft, int16_t move_x, int16_t move_y)
     } 
 }
 
+void Block::move(int16_t move_x, int16_t move_y)
+{
+    if (used) {
+        pos_x += move_x;
+        pos_y += move_y;
+        if (active) {
+            last_pos_x=pos_x; 
+            last_pos_y=pos_y;
+        }    
+        else
+        {
+            //tft->drawRect(pos_x+move_x, pos_y+move_y, blockwidth, blockheight, color);
+            //tft->drawRect(pos_x+1+move_x, pos_y+1+move_y, blockwidth-2, blockheight-2, color);
+        }
+            
+    } 
+}
+
 void Block::draw(Screen * tft, int16_t move_x, int16_t move_y, int16_t othercolor)
 {
     if (used) {
@@ -289,18 +307,25 @@ else {  // Space Invader
          blockoffset = 5;
         break;
         case 2: // 2.4"
-        blockwidth = 12;
-        blockheight = 14;
-        blockstartx = 280;
-        blockstarty = 400;
-        blockoffset = 10;
+            blockwidth = 12;
+            blockheight = 14;
+            blockstartx = 280;
+            blockstarty = 400;
+            blockoffset = 10;
+        break;
+         case 7:
+            blockwidth = 40;
+            blockheight = 24;
+            blockstartx = 900;
+            blockstarty = 600;
+            blockoffset = 10;
         break;
         default:
-        blockwidth = 12;
-        blockheight = 14;
-        blockstartx = 280;
-        blockstarty = 400;
-        blockoffset = 10;        
+            blockwidth = 12;
+            blockheight = 14;
+            blockstartx = 280;
+            blockstarty = 400;
+            blockoffset = 10;        
     }
 }
 

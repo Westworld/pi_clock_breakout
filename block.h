@@ -33,6 +33,7 @@ public:
     void draw(Screen * mastertft, Ballsize ballsize);
     void draw(Screen * mastertft, int16_t move_x, int16_t move_y);
     void draw(Screen * tft, int16_t move_x, int16_t move_y, int16_t othercolor);
+    void move(int16_t move_x, int16_t move_y);
     void undraw(Screen * mastertft);
     void undraw(Screen * mastertft, int16_t move_x, int16_t move_y);
     int16_t check(int16_t posx, int16_t pos_y, int16_t move_x, int16_t move_y, Screen * mastertft);

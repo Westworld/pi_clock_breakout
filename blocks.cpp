@@ -130,6 +130,16 @@ void Blocks::draw(int16_t old_x, int16_t old_y, int16_t loop, int16_t move_x, in
    allblocks[loop]->draw(tft, old_x+move_x, old_y+move_y);
 }
 
+void Blocks::move(int16_t old_x, int16_t old_y, int16_t loop, int16_t move_x, int16_t move_y)
+{
+   int16_t maxelements = sizeof(allblocks)/sizeof(allblocks[0]);
+   if (loop >= maxelements) return;
+
+   allblocks[loop]->move( old_x+move_x, old_y+move_y);
+}
+
+
+
 void Blocks::draw(Ball * ball)  // only draw blocks close to the ball position
 {
    int16_t maxelements = sizeof(allblocks)/sizeof(allblocks[0]);
